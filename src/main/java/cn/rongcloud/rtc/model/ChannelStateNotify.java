@@ -8,6 +8,7 @@ import java.util.List;
  {
     "appKey":"XXXXXXX",
     "channelId":"xxxx",
+    "sessionId": "xxxx",
     "event":1,
     "userId":"xxxx",
     "timestamp":2222222,
@@ -55,6 +56,7 @@ public class ChannelStateNotify {
 
 	private String appKey;
 	private String channelId;
+	private String sessionId;
 	private int event;
 	private String userId;
 	private long timestamp;
@@ -72,6 +74,12 @@ public class ChannelStateNotify {
 	}
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+	public String getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 	public int getEvent() {
 		return event;

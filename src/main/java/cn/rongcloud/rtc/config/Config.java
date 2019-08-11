@@ -10,18 +10,21 @@ public class Config {
 	private String appKey;
 	@RequiredConfig
 	private String secret;
+	private boolean appFilter = true;
 	
 	private String recordNodeAddr;
 	
 	private int recordType = RecordType.AutoRecord.getValue();
 	
-	private int checkExpiredTimeSec = 120;
-	private int channelExpiredTimeSec = 400;
+	private int checkExpiredTimeSec = 60;
+	private int channelExpiredTimeSec = 150;
 
 	public static void initialize() throws Exception {
 		instance = new Config();
 		ConfigUitl.initLocalConfig(instance, "ServiceSettings.properties");
-		ConfigUitl.checkRequiredConfig(instance);
+		if (instance.isAppFilter()) {
+			ConfigUitl.checkRequiredConfig(instance);
+		}
 	}
 
 	public static Config instance() {
@@ -44,6 +47,10 @@ public class Config {
 		return secret;
 	}
 	
+	public boolean isAppFilter() {
+		return appFilter;
+	}
+
 	public int getRecordType() {
 		return recordType;
 	}
@@ -59,5 +66,5 @@ public class Config {
 	public boolean bIsCustomRecord() {
 		return this.recordType == RecordType.CustomRecord.getValue();
 	}
-	
+
 }

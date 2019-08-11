@@ -32,18 +32,20 @@ public class ChannelSyncController {
 	@ResponseBody
 	public ResponseEntity recvChannelNotify(@RequestBody String body, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String appKey = request.getHeader("appKey");
-		if (!Config.instance().getAppKey().equals(appKey)) {
-			logger.warn("channel sysn message appKey is error {}", appKey);
-			response.setStatus(403);
-			return new ResponseEntity(403, "appKey is error");
-		}
 		logger.info(body);
-		//校验签名
-		if (!SignUtil.checkSign(request)) {
-			logger.warn("check sign failed!");
-			response.setStatus(403);
-			return new ResponseEntity(403, "check sign failed!");
+		if (Config.instance().isAppFilter()) {
+			String appKey = request.getHeader("appKey");
+			if (!Config.instance().getAppKey().equals(appKey)) {
+				logger.warn("channel sysn message appKey is error {}", appKey);
+				response.setStatus(403);
+				return new ResponseEntity(403, "appKey is error");
+			}
+			//校验签名
+			if (!SignUtil.checkSign(request)) {
+				logger.warn("check sign failed!");
+				response.setStatus(403);
+				return new ResponseEntity(403, "check sign failed!");
+			}
 		}
 		ChannelStateNotify notify = gson.fromJson(body, ChannelStateNotify.class);
 		

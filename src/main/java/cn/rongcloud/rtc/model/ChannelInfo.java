@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 public class ChannelInfo {
 	private String appKey;
 	private String channelId;
+	private String sessionId;
 	private String extra;
 	private String userId;
 	private String token;
@@ -19,10 +20,11 @@ public class ChannelInfo {
 	private List<RecordMember> members = new CopyOnWriteArrayList<>();
 	private long lastTimestamp;
 	
-	public ChannelInfo(String appKey, String channelId) {
+	public ChannelInfo(String appKey, String channelId, String sessionId) {
 		lastTimestamp = System.currentTimeMillis();
 		this.appKey = appKey;
 		this.channelId = channelId;
+		this.sessionId = sessionId;
 	}
 
 	public String getAppKey() {
@@ -39,6 +41,14 @@ public class ChannelInfo {
 
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public String getExtra() {

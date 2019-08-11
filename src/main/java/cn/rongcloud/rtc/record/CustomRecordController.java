@@ -23,7 +23,7 @@ public class CustomRecordController {
 	private static Gson gson = new Gson();
 
 	@RequestMapping(value = "/customrecord/start", method = RequestMethod.POST)
-	public void startCustomRecord(String userId, String channelId, String fileName, HttpServletRequest request, HttpServletResponse response)
+	public void startCustomRecord(String appKey, String sessionId, String userId, String channelId, String fileName, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		if (Config.instance().getRecordType() != RecordType.CustomRecord.getValue()) {
 			response.sendError(403, "server does not support this record type!");
@@ -33,13 +33,23 @@ public class CustomRecordController {
 			response.sendError(405, "userId and channelId is all empty, please check it!");
 			return;
 		}
-		ChannelInfo channelInfo = RecordManager.instance().getChannelInfoByUidOrCid(userId,channelId);
+
+		if (appKey == null || appKey.length() == 0) {
+			appKey = Config.instance().getAppKey();
+		}
+		ChannelInfo channelInfo = null;
+		if (sessionId == null || sessionId.length() == 0) {
+			// use latest session of each channel of user
+			channelInfo = RecordManager.instance().getChannelInfoByUidOrCid(appKey, userId, channelId);
+		} else {
+			channelInfo = RecordManager.instance().getChannelInfo(appKey, sessionId);
+		}
 		if (channelInfo == null) {
 			response.sendError(404, "the channel is not exist!");
 			return;
 		}
 
-		boolean bIsSuc = RecordManager.instance().startRecord(userId, channelInfo, fileName);
+		boolean bIsSuc = RecordManager.instance().startRecord(channelInfo, userId, fileName);
 		if (bIsSuc) {
 			sendResponse(200, "OK", response);
 		} else {
@@ -48,7 +58,7 @@ public class CustomRecordController {
 	}
 
 	@RequestMapping(value = "/customrecord/stop", method = RequestMethod.POST)
-	public void stopCustomRecord(String userId, String channelId, HttpServletRequest request, HttpServletResponse response)
+	public void stopCustomRecord(String appKey, String sessionId, String userId, String channelId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		if (Config.instance().getRecordType() != RecordType.CustomRecord.getValue()) {
 			response.sendError(403, "server does not support this record type!");
@@ -59,7 +69,18 @@ public class CustomRecordController {
 			return;
 		}
 
-		boolean bIsSuc = RecordManager.instance().stopRecord(userId,channelId);
+		if (appKey == null || appKey.length() == 0) {
+			appKey = Config.instance().getAppKey();
+		}
+		ChannelInfo channelInfo = null;
+		if (sessionId == null || sessionId.length() == 0) {
+			// use latest session of each channel of user
+			channelInfo = RecordManager.instance().getChannelInfoByUidOrCid(appKey, userId, channelId);
+		} else {
+			channelInfo = RecordManager.instance().getChannelInfo(appKey, sessionId);
+		}
+
+		boolean bIsSuc = RecordManager.instance().stopRecord(channelInfo, userId);
 		if (bIsSuc) {
 			sendResponse(200, "OK", response);
 		} else {
