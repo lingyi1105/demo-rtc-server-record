@@ -99,7 +99,7 @@ public class RecordManager implements ChannelEventListener {
 		boolean needNotifyToRecord = true;
 		ChannelInfo info = getChannelInfoFromMap(notify.getAppKey(), notify.getChannelId(), notify.getSessionId());
 		RecordMember member = info.removeMemberByUserId(notify.getUserId());
-		if (member == null || member.getUris().isEmpty()) {
+		if (member == null/* || member.getUris().isEmpty()*/) {
 			needNotifyToRecord = false;
 		}
 		// 自定义开始结束录像特殊处理
